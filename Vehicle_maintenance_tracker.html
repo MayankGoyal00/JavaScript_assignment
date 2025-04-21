@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Maintenance</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #dfe5de;
+    }
+    h1{
+      background-color: #698ff9;
+      color: #fff;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    section{
+      padding: 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    form{
+      margin-bottom: 2rem;
+      width: 780px;
+    }
+    label{
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+    }
+    input,button,select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #3002fe;
+      border-radius: 5px; 
+    }
+    button{
+      width: 200px;
+      background-color: #698ff9;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover{
+      background-color: #3655b9;
+    }
+    .task{
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .task.completed{
+      text-decoration: line-through;
+      background-color: #d1d4d5;
+    }
+    .task button{
+      margin-right: 0.5rem;
+    }
+    .filter{
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+ 
+<body>
+
+    
+  <section>
+    <h1>Car Maintenance</h1>
+    <h3>Add Task</h3>
+    <form id="Car-form">
+      <label for="make">Car Name</label>
+      <input type="text" id="make" name="make" placeholder="Car Name" required>
+ 
+      <label for="model">Car Model</label>
+      <input type="text" id="model" name="model" placeholder="Car Model" required>
+ 
+      <label for="description">Task Description</label>
+      <input type="text" id="description" name="description" placeholder="Description" required>
+ 
+      <label for="date">Due Date</label>
+      <input type="date" id="date" name="date" required>
+ 
+      <button type="submit">Add Task</button>
+    </form>
+ 
+    <div class="filter">
+      <label for="filter">Filter Task</label>
+      <select id="filter">
+        <option value="all">All</option>
+        <option value="pending">Pending </option>
+        <option value="completed">Completed </option>
+      </select>
+    </div>
+
+    <div id="submitedTask"></div>
+  </section> 
+  <script>
+    document.addEventListener('DOMContentLoaded',() => {
+      const form = document.getElementById('Car-form');
+      const submitedTaskDiv = document.getElementById('submitedTask');
+      const filterSelect = document.getElementById('filter');
+      let eIndex = null;
+      display();
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const task={
+          make: form.make.value,
+          model: form.model.value,
+          description: form.description.value,
+          date: form.date.value,
+          status:'pending'
+        };
+ 
+        if (eIndex !== null) {
+          updateTask(eIndex, task);
+          eIndex = null;
+        } else {
+          addTask(task);
+        }
+ 
+        form.reset();
+        display();
+      });
+ 
+      filterSelect.addEventListener('change', display);
+ 
+      function display() {
+        const tasks = getTasks();
+        const filter = filterSelect.value;
+        submitedTaskDiv.innerHTML = ''; 
+        tasks.forEach((task, index) =>{
+          if (filter === 'all'||filter.toLowerCase() === task.status.toLowerCase()) {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = `task ${task.status.toLowerCase() === 'completed' ? 'completed' : ''}`;
+ 
+            taskDiv.innerHTML = `
+              <p><strong>Car:</strong> ${task.make} ${task.model}</p>
+              <p><strong>Task:</strong> ${task.description}</p>
+              
+              Date: ${task.date}</p>
+              <p><strong>Status:</strong> ${task.status}</p>
+              <button onclick="markComplete(${index})">Mark as Complete</button>
+              <button onclick="editTask(${index})">Edit</button>
+              <button onclick="deleteTask(${index})">Delete</button>
+            `;
+            submitedTaskDiv.appendChild(taskDiv);
+          }
+        });
+      }
+ 
+      window.markComplete = (index) => {
+        const tasks = getTasks();
+        tasks[index].status = 'Completed';
+        saveTasks(tasks);
+        display();
+      };
+ 
+      window.editTask = (index) => {
+        const tasks = getTasks();
+        const task = tasks[index];
+        form.make.value = task.make;
+        form.model.value = task.model;
+        form.description.value = task.description;
+        form.date.value = task.date;
+        eIndex = index;
+      };
+ 
+      window.deleteTask = (index) => {
+        const tasks = getTasks();
+        tasks.splice(index, 1);
+        saveTasks(tasks);
+        display();
+      };
+      function saveTasks(tasks) {
+        localStorage.setItem('tasks',JSON.stringify(tasks));
+      }
+      function getTasks() {
+        const tasks = localStorage.getItem('tasks');
+        return tasks ?JSON.parse(tasks) : [];
+      }
+      function addTask(task) {
+        const tasks = getTasks();
+        tasks.push(task);
+        saveTasks(tasks);
+      }
+      function updateTask(index, updatedTask) {
+        const tasks = getTasks();
+        tasks[index] = updatedTask;
+        saveTasks(tasks);
+      }
+    });
+  </script>
+</body>
+</html>
+ 

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Find and Find All</title>
+  <style>
+    .highlight{
+      background-color: rgb(158, 233, 253);
+      font-weight: bold;
+    }
+  </style>
+
+</head>
+<body>
+ 
+<h3>Find and Find All</h3>
+
+<p id="text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias perferendis minus reiciendis ut velit illo blanditiis ducimus vitae eos. Quia ut ea iure necessitatibus molestias reiciendis id quos fugit!
+Praesentium saepe necessitatibus animi reprehenderit, odio cumque vero odit tenetur libero, accusamus harum recusandae dolorum pariatur aperiam repudiandae dolorem fugit voluptatum dolor, vitae assumenda doloremque voluptatem. Hic dolores repellat voluptates.
+Ipsum sapiente laudantium, ullam tempora aspernatur impedit repellendus animi quis minima temporibus modi vel delectus minus, qui aut architecto iusto necessitatibus sit beatae est! Omnis, vel nesciunt. Repellendus, ipsam fugit.
+Corrupti autem ipsum culpa quo quidem omnis qui. Ipsa, voluptatibus labore placeat dolores, sapiente minima voluptatem vel dicta porro ducimus repudiandae accusantium quae aperiam, maiores praesentium asperiores similique sequi excepturi?
+Quidem voluptatum ullam possimus praesentium vitae sapiente, earum optio, exercitationem, architecto beatae enim sint dolorem perferendis ex quasi cum ut eligendi rerum dicta vel? Repudiandae sed non excepturi cum aspernatur.
+Ratione, maxime vero ipsam impedit sapiente architecto fugiat optio quisquam ex dolores doloribus libero dolorum voluptatem saepe laboriosam in, eveniet rem numquam officiis sed modi. Porro voluptates accusantium vitae hic.
+Dolor harum accusamus saepe, quod pariatur dolorum amet omnis voluptas minus magni impedit, laborum sapiente, quia accusantium maiores ipsum est! Ratione reprehenderit atque corporis minima dolores, architecto qui voluptates rerum.
+Veniam saepe obcaecati eligendi commodi vero alias! Sapiente et est rerum pariatur architecto similique deleniti hic enim. Explicabo accusamus, sint vero iure id perspiciatis magni, assumenda expedita perferendis animi provident!
+Mollitia inventore laborum maxime laudantium quaerat. Et quas non beatae facere quam modi iure mollitia alias corrupti fugiat quia debitis ipsa eveniet officia accusamus explicabo amet, illo sunt voluptatem itaque?
+Necessitatibus dignissimos dolorem nam aperiam at amet, optio ullam fugiat libero, iure deleniti. Inventore, excepturi tempora. Nulla voluptas atque consequatur a sit soluta ipsa, ad in, vero dolor cum non.
+</p>
+<input type="text" id="input" placeholder="find word">
+<button onclick="Word(false)">Find</button>
+<button onclick="Word(true)">Find All</button>
+ 
+<script>
+function Word(findAll) {
+  const word = document.getElementById("input").value.trim();
+  const textEl = document.getElementById("text");
+  const originalText = textEl.innerText;
+
+  let result = "";
+  let start = 0;
+  let index;
+ 
+  while ((index = originalText.toLowerCase().indexOf(word.toLowerCase(), start))!== -1) 
+  {
+    result += originalText.slice(start, index);
+    result += `<span class="highlight">${originalText.slice(index, index + word.length)}</span>`;
+    start = index + word.length;
+ 
+    if(!findAll){
+        break;
+    }
+  }
+  result= result+originalText.slice(start);
+  if (result===originalText) {
+    alert("Word not found.");
+  } else {
+    textEl.innerHTML = result;
+  }
+}
+</script>
+</body>
+</html>
+ 
